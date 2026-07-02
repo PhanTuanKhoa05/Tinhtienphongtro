@@ -47,38 +47,6 @@ else:
 
     # --- PHẦN 4: HIỂN THỊ HÓA ĐƠN CHI TIẾT ---
     st.header("📊 Hóa Đơn Tiền Phòng Chi Tiết")
-   # --- PHẦN TỰ ĐỘNG TẠO MÃ QR THANH TOÁN (Chèn vào dưới bảng hóa đơn) ---
-    st.divider()
-    st.subheader("💳 Quét QR Thanh Toán Nhanh")
-    
-    # 1. Cấu hình thông tin ngân hàng của chủ trọ (Nhóm tự thay đổi thông tin ở đây)
-    BANK_ID = "MB"          # Tên viết tắt của Ngân hàng (Ví dụ: MB, VCB, BIDV, ICB...)
-    ACCOUNT_NO = "0123456789" # Số tài khoản ngân hàng của bạn
-    ACCOUNT_NAME = "NGUYEN VAN A" # Tên chủ tài khoản (Viết hoa không dấu)
-    
-    # 2. Tạo nội dung chuyển khoản tự động
-    # Nội dung ngắn gọn, không dấu, không ký tự đặc biệt (Ví dụ: Phong 101 thanh toan tien phong)
-    ten_phong = "Phong_Tro" # Bạn có thể đổi tùy ý
-    noi_dung_ck = f"{ten_phong} thanh toan tien phong"
-    noi_dung_url = noi_dung_ck.replace(" ", "%20") # Mã hóa khoảng trắng để đưa vào URL
-    
-    # 3. Gọi API VietQR để tự tạo link ảnh QR động theo số tiền đã tính
-    # Công thức định dạng: https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-compact2…nt=<AMOUNT>&addInfo=<DESCRIPTION>&accountName=<ACCOUNT_NAME>
-    url_qr = f"https://img.vietqr.io/image/{BANK_ID}-{ACCOUNT_NO}-compact2…_tien:.0f}&addInfo={noi_dung_url}&accountName={ACCOUNT_NAME}"
-    
-    # 4. Hiển thị mã QR lên giao diện Streamlit
-    col_qr1, col_qr2 = st.columns([1, 2])
-    with col_qr1:
-        st.image(url_qr, caption="Quét mã bằng App Ngân hàng để thanh toán", use_container_width=True)
-    with col_qr2:
-        st.markdown(f"""
-        **Thông tin chuyển khoản dự phòng:**
-        * 🏦 Ngân hàng: **{MB_0344714334}**
-        * 🔢 Số tài khoản: `{ACCOUNT_NO}`
-        * 👤 Chủ tài khoản: **{ACCOUNT_NAME}**
-        * 💰 Số tiền: **{tong_tien:,.0f} VNĐ**
-        * 📝 Nội dung CK: `{noi_dung_ck}`
-        """)
  
     # Hiển thị tổng tiền lớn, nổi bật
     st.metric(label="💰 TỔNG SỐ TIỀN CẦN THANH TOÁN", value=f"{tong_tien:,.0f} VNĐ")
