@@ -47,7 +47,7 @@ else:
 
     # --- PHẦN 4: HIỂN THỊ HÓA ĐƠN CHI TIẾT ---
     st.header("📊 Hóa Đơn Tiền Phòng Chi Tiết")
- 
+    
     # Hiển thị tổng tiền lớn, nổi bật
     st.metric(label="💰 TỔNG SỐ TIỀN CẦN THANH TOÁN", value=f"{tong_tien:,.0f} VNĐ")
 
@@ -71,74 +71,4 @@ else:
     # Tạo nội dung văn bản để copy gửi Zalo nhanh
     st.subheader("📱 Tin nhắn gửi nhanh")
     tin_nhan = f"Thông báo tiền phòng tháng này:\n- Tiền phòng: {gia_phong:,.0f}đ\n- Điện: {so_dien_tieu_thu}kWh ({tien_dien:,.0f}đ)\n- Nước: {so_nuoc_tieu_thu} khối ({tien_nuoc:,.0f}đ)\n- Wifi + Rác: {(gia_wifi+gia_rac):,.0f}đ\n=> TỔNG: {tong_tien:,.0f}đ (Mỗi người: {tien_moi_nguoi:,.0f}đ). Các bạn chuyển khoản sớm nhé!"
-    st.text_area("Copy đoạn văn bản này để gửi cho phòng trọ:", value=tin_nhan, height=150)
-# --- PHẦN TỰ ĐỘNG TẠO MÃ QR THANH TOÁN (Chèn vào dưới bảng hóa đơn) ---
-    st.divider()
-    st.subheader("💳 Quét QR Thanh Toán Nhanh")
-    
-    # 1. Cấu hình thông tin ngân hàng của chủ trọ (Nhóm tự thay đổi thông tin ở đây)
-    BANK_ID = "MB"          # Tên viết tắt của Ngân hàng (Ví dụ: MB, VCB, BIDV, ICB...)
-    ACCOUNT_NO = "0344714334" # Số tài khoản ngân hàng của bạn
-    ACCOUNT_NAME = "PHAN TUAN KHOA" # Tên chủ tài khoản (Viết hoa không dấu)
-    
-    # 2. Tạo nội dung chuyển khoản tự động
-    # Nội dung ngắn gọn, không dấu, không ký tự đặc biệt (Ví dụ: Phong 101 thanh toan tien phong)
-    ten_phong = "Phong_Tro" # Bạn có thể đổi tùy ý
-    noi_dung_ck = f"{ten_phong} thanh toan tien phong"
-    noi_dung_url = noi_dung_ck.replace(" ", "%20") # Mã hóa khoảng trắng để đưa vào URL
-    
-    # 3. Gọi API VietQR để tự tạo link ảnh QR động theo số tiền đã tính
-    # Công thức định dạng: https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-compact2…nt=<AMOUNT>&addInfo=<DESCRIPTION>&accountName=<ACCOUNT_NAME>
-    # --- CẤU HÌNH THÔNG TIN TÀI KHOẢN NGÂN HÀNG ---
-BANK_ID = "MB"          # Thay bằng mã ngân hàng của bạn (Ví dụ: VCB, MB, TCB, ICB...)
-ACCOUNT_NO = "12345678" # Thay bằng số tài khoản ngân hàng của bạn
-ACCOUNT_NAME = "NGUYEN VAN A" # Thay bằng tên chủ tài khoản (VIET HOA KHONG DAU)
-
-# --- ĐOẠN CODE TÍNH TOÁN VÀ TẠO QR (Đã sửa lỗi cú pháp dòng 92) ---
-if so_dien_tieu_thu < 0 or so_nuoc_tieu_thu < 0:
-    st.error("❌ Lỗi: Số mới không được nhỏ hơn số cũ! Vui lòng kiểm tra lại.")
-else:
-    tien_dien = so_dien_tieu_thu * gia_dien
-    tien_nuoc = so_nuoc_tieu_thu * gia_nuoc
-    tong_tien = gia_phong + tien_dien + tien_nuoc + gia_wifi + gia_rac
-
-    st.divider()
-
-    # --- HIỂN THỊ HÓA ĐƠN CHI TIẾT ---
-    st.header("📊 Hóa Đơn Tiền Phòng Chi Tiết")
-    
-    st.metric(label="💰 TỔNG SỐ TIỀN CẦN THANH TOÁN", value=f"{tong_tien:,.0f} VNĐ")
-
-    st.markdown(f"""
-    | Khoản mục | Chi tiết chỉ số | Thành tiền (VNĐ) |
-    | :--- | :--- | :--- |
-    | **🏠 Tiền phòng cố định** | | {gia_phong:,.0f} |
-    | **⚡ Tiền điện** | {so_dien_tieu_thu} kWh x {gia_dien:,.0f}đ | {tien_dien:,.0f} |
-    | **💧 Tiền nước** | {so_nuoc_tieu_thu} khối x {gia_nuoc:,.0f}đ | {tien_nuoc:,.0f} |
-    | **🌐 Tiền Wifi** | Gói cố định | {gia_wifi:,.0f} |
-    | **🗑️ Tiền rác & dịch vụ**| Gói cố định | {gia_rac:,.0f} |
-    """)
-
-    # Tính năng phụ: Chia đều tiền theo đầu người
-    st.subheader("👥 Tính năng chia đều (Tùy chọn)")
-    so_nguoi = st.slider("Số lượng thành viên trong phòng:", min_value=1, max_value=6, value=3)
-    tien_moi_nguoi = tong_tien / so_nguoi
-    st.info(f"👉 Mỗi người cần đóng: **{tien_moi_nguoi:,.0f} VNĐ**")
-
-    # --- TỰ ĐỘNG TẠO MÃ QR THANH TOÁN (VIETQR) ---
-    st.subheader("📸 Quét QR Thanh Toán Nhanh")
-    
-    # Định dạng nội dung chuyển khoản không dấu, không khoảng cách đặc biệt
-    noi_dung_ck = f"Tien phong thang nay"
-    noi_dung_url = noi_dung_ck.replace(" ", "%20")
-    
-    # Cú pháp link VietQR chuẩn hóa, bọc các biến trong cặp dấu ngoặc nhọn duy nhất {}
-    url_qr = f"https://img.vietqr.io/image/{BANK_ID}-{ACCOUNT_NO}-compact2…_tien:.0f}&addInfo={noi_dung_url}&accountName={ACCOUNT_NAME}"
-    
-    # Hiển thị ảnh QR lên giao diện Streamlit
-    st.image(url_qr, caption="Quét mã này bằng ứng dụng Ngân hàng để tự động điền số tiền và nội dung", width=300)
-
-    # Tạo nội dung văn bản để copy gửi Zalo nhanh
-    st.subheader("📱 Tin nhắn gửi nhanh")
-tin_nhan = f"Thông báo tiền phòng tháng này:\n- Tiền phòng: {gia_phong:,.0f}đ\n- Điện: {so_dien_tieu_thu}kWh ({tien_dien:,.0f}đ)\n- Nước: {so_nuoc_tieu_thu} khối ({tien_nuoc:,.0f}đ)\n- Wifi + Rác: {(gia_wifi+gia_rac):,.0f}đ\n=> TỔNG: {tong_tien:,.0f}đ (Mỗi người: {tien_moi_nguoi:,.0f}đ). Các bạn chuyển khoản sớm nhé!"
     st.text_area("Copy đoạn văn bản này để gửi cho phòng trọ:", value=tin_nhan, height=150)
