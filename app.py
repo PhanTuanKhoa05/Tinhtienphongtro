@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="App Tính Tiền Phòng Trọ ", page_icon="🏠", layout="centered")
 
 # Tiêu đề ứng dụng
-st.title("🏠 Hệ Thống Tính Tiền Phòng Trọ Tự Động. Đề tài 1 Nhóm Tuấn Khoa ")
+st.title("🏠 Hệ Thống Tính Tiền Phòng Trọ Tự Động. Đề tài 1 Nhóm Tuấn Khoa-Hoàng Minh ")
 st.write("Ứng dụng hỗ trợ chủ trọ tính toán và xuất hóa đơn nhanh chóng.")
 
 st.divider() # Thanh chia cắt giao diện
